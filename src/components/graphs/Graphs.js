@@ -97,6 +97,10 @@ class Graphs extends Component {
                         />
                     </div>
                     <div className="monthly-tracker">
+                        <div className="block-header">
+                            <div className="title">Monthly Payment Tracker</div>
+                            <div><FaInfo size={24}/></div>
+                        </div>
                         <MonthlyTracker/>
                     </div>
                 </div>
