@@ -1,0 +1,12 @@
+.calculator {
+    width: 300px;
+    background-color: rgb(237, 238, 239);
+    height: 100vh;
+    padding: 0 24px;
+    box-sizing: border-box;
+    box-shadow: 1px 0px 10px #b3b0b0;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow-y: auto;
+}

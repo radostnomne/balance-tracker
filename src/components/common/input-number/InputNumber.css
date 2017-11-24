@@ -1,0 +1,59 @@
+.input-number-container {
+    padding: 8px 0;
+}
+
+.label {
+    font-size: 0.8em;
+    color: #969595;
+    text-align: left;
+    margin: 0 0 4px 0;
+}
+
+.input-wrapper {
+    display: flex;
+    flex-direction: row;
+}
+
+.input-number {
+    padding: 0 12px;
+    vertical-align: top;
+    text-align: center;
+    outline: none;
+    border: none;
+    flex-grow: 1;
+}
+
+.input-number,
+.input-number-decrement,
+.input-number-increment {
+    height: 40px;
+    user-select: none;
+    background: #f8f8f8;
+}
+
+
+.input-number-decrement,
+.input-number-increment {
+    display: inline-block;
+    width: 30px;
+    line-height: 38px;
+    color: #444;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.input-number-decrement:active,
+.input-number-increment:active {
+    background: #ddd;
+}
+
+.input-number-decrement {
+    border-right: none;
+    border-radius: 4px 0 0 4px;
+}
+
+.input-number-increment {
+    border-left: none;
+    border-radius: 0 4px 4px 0;
+}
