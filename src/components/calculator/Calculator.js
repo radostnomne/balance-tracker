@@ -9,11 +9,36 @@ class Calculator extends Component {
         this.setState({ value: 0 });
     }
 
+    generateMap() {
+        const map = new Map();
+        const model = (Fixed, Variable) => {
+            return { Fixed, Variable };
+        };
+
+        map.set(2, model(0.018, 0.017));
+        map.set(3, model(0.02, 0.018));
+        map.set(5, model(0.025, 0.02));
+        map.set(7, model(0.028, 0.02));
+        map.set(10, model(0.03, 0.02));
+
+        return map;
+    }
+
+
     handleChange = (value) => {
         console.log(value);
     }
 
     render() {
+        const {
+            currentBorrowAmount,
+            currentMortgageTerm,
+            currentMonthlyRepayment,
+            futureBorrowAmount,
+            futureMortgageTerm,
+            futureMonthlyRepayment,
+        } = this.props;
+
         return (
             <div className="calculator">
                 <div>
@@ -24,17 +49,17 @@ class Calculator extends Component {
                 <hr/>
 
                 <div className="current">
-                    <InputNumber value={123} label={'Current borrowing amount'} prefix='£' onchange={this.handleChange}/>
-                    <InputNumber value={123} label={'Current mortgage term'} postfix=' years' onchange={this.handleChange}/>
-                    <InputNumber value={123} label={'Current monthly repayment'} prefix='£' onchange={this.handleChange}/>
+                    <InputNumber value={currentBorrowAmount} label={'Current borrowing amount'} prefix='£' onchange={this.props.changeCurrentAmount}/>
+                    <InputNumber value={currentMortgageTerm} label={'Current mortgage term'} postfix=' years' onchange={this.props.changeMortgageTerm}/>
+                    <InputNumber value={currentMonthlyRepayment} label={'Current monthly repayment'} prefix='£' onchange={this.props.changeMonthlyRepayment}/>
                 </div>
 
                 <hr/>
 
                 <div className="future">
-                    <InputNumber value={123} label={'Future borrowing amount'} prefix='£' onchange={this.handleChange}/>
-                    <InputNumber value={123} label={'Future mortgage term'} postfix=' years' onchange={this.handleChange}/>
-                    <InputNumber value={123} label={'Future monthly repayment'} prefix='£' onchange={this.handleChange}/>
+                    <InputNumber value={futureBorrowAmount} label={'Future borrowing amount'} prefix='£' onchange={this.props.changeFutureAmount}/>
+                    <InputNumber value={futureMortgageTerm} label={'Future mortgage term'} postfix=' years' onchange={this.props.changeFutureMortgageTerm}/>
+                    <InputNumber value={futureMonthlyRepayment} label={'Future monthly repayment'} prefix='£' onchange={this.props.changeFutureMonthlyRepayment}/>
                 </div>
 
                 <div>
