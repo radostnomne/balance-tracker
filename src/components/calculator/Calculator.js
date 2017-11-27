@@ -5,10 +5,6 @@ import './Calculator.css';
 
 class Calculator extends Component {
 
-    componentWillMount() {
-        this.setState({ value: 0 });
-    }
-
     generateMap() {
         const map = new Map();
         const model = (Fixed, Variable) => {
@@ -22,11 +18,6 @@ class Calculator extends Component {
         map.set(10, model(0.03, 0.02));
 
         return map;
-    }
-
-
-    handleChange = (value) => {
-        console.log(value);
     }
 
     render() {
@@ -63,8 +54,8 @@ class Calculator extends Component {
                 </div>
 
                 <div>
-                    <RadioButtons values={[1, 2, 3, 4, 5]} label={'Introductory term in years'} name={'term'} onchange={this.handleChange}/>
-                    <RadioButtons values={['Fixed', 'Variable']} label={'Future mortgage type'} name={'type'} onchange={this.handleChange}/>
+                    <RadioButtons values={[2, 3, 5, 7, 10]} label={'Introductory term in years'} name={'term'} onchange={this.props.changeFutureTerm}/>
+                    <RadioButtons values={['Fixed', 'Variable']} label={'Future mortgage type'} name={'type'} onchange={this.props.changeFutureMortageType}/>
                     <RadioButtons values={['Repayment', 'Interest only']} label={'Future repayment method'} name={'method'} onchange={this.handleChange}/>
                 </div>
             </div>

@@ -16,7 +16,7 @@ class Graphs extends Component {
             },
             columns: [
                 {
-                    type: 'number',
+                    type: 'string',
                     label: 'Year',
                 },
                 {
