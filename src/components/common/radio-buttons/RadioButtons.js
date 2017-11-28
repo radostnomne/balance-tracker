@@ -13,6 +13,7 @@ class RadioButtons extends Component {
 
     render() {
         const { values, label, name } = this.state;
+        const { selectedItem } = this.props;
 
         return (
             <div className="radio-container">
@@ -22,7 +23,7 @@ class RadioButtons extends Component {
                         values.map((value, i) => {
                             return (
                                 <div className="radio-wrapper" key={i}>
-                                    <input type="radio" name={name} id={value} className="visually-hidden" onClick={this.onChange} value={value}/>
+                                    <input type="radio" name={name} id={value} className="visually-hidden" onClick={this.onChange} value={value} defaultChecked={selectedItem === value}/>
                                     <label htmlFor={value}>{value}</label>
                                 </div>
                             );

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import AlertContainer from 'react-alert';
 import moment from 'moment';
 import Calculator from '../../components/calculator/Calculator';
 import Graphs from '../../components/graphs/Graphs';
@@ -18,39 +19,27 @@ class BalanceTracker extends Component {
             futureMonthlyRepayment: 1900,
             futureMortgageType: 'Fixed',
             futureTermInYears: 2,
+            futureRepaymentMethod: 'Repayment',
+            alertOptions: {
+                offset: 14,
+                position: 'bottom right',
+                theme: 'light',
+                time: 3000,
+                transition: 'scale'
+            },
         }, () => this.calculation());
     }
 
-    handleChangeCurrentBorrowAmount = (value) => {
-        this.setState({ currentBorrowAmount: +value }, () => this.calculation());
+    handleChangeNumber = (field, value) => {
+        const o = {};
+        o[field] = +value;
+        this.setState(o, this.calculation());
     }
 
-    handleChangeCurrentMortgageTerm = (value) => {
-        this.setState({ currentMortgageTerm: +value }, () => this.calculation());
-    }
-
-    handleChangeCurrentMonthlyRepayment = (value) => {
-        this.setState({ currentMonthlyRepayment: +value }, () => this.calculation());
-    }
-
-    handleChangeFutureBorrowAmount = (value) => {
-        this.setState({ futureBorrowAmount: +value }, () => this.calculation());
-    }
-
-    handleChangeFutureMortgageTerm = (value) => {
-        this.setState({ futureMortgageTerm: +value }, () => this.calculation());
-    }
-
-    handleChangeFutureRepayment = (value) => {
-        this.setState({ futureMonthlyRepayment: +value }, () => this.calculation());
-    }
-
-    changeFutureTerm = (value) => {
-        this.setState({ futureTermInYears: +value }, () => this.calculation());
-    }
-
-    changeFutureMortageType = (value) => {
-        this.setState({ futureMortgageType: value }, () => this.calculation());
+    handleChangeString = (field, value) => {
+        const o = {};
+        o[field] = value;
+        this.setState(o, this.calculation());
     }
 
     interestRate = (periods, payment, present, future, type, guess) => {
@@ -94,12 +83,30 @@ class BalanceTracker extends Component {
         return rate;
     }
 
+    futureMonthlyRepayment = (rate, term, amount, repaymentMethod, outstandingBalance) => {
+        const pmt = (rate, term, amount) => {
+            const f = (i, n) => Math.pow(1 + i, n);
+
+            return amount * ((rate * f(rate, term)) / (f(rate, term) - 1));
+        }
+
+        return outstandingBalance < 1 || repaymentMethod === 'Interest Only' ? 0 : pmt(rate, term, amount);
+    }
+
     interest = (amount, rate) => {
         return amount * rate;
     }
 
     capital = (amount, interest) => {
         return amount > 0 ? (amount + interest) : 0;
+    }
+
+    futureCapital = (amount, interest, repaymentMethod) => {
+        if (amount < 1 || repaymentMethod === 'Interest Only') {
+            return 0;
+        } else {
+            return amount + interest;
+        }
     }
 
     getNextDate = (current) => {
@@ -118,6 +125,13 @@ class BalanceTracker extends Component {
         return table.get(term)[type]/12;
     }
 
+    showAlert = () => {
+        this.alert.show('Something went wrong!', {
+            time: 2000,
+            type: 'success',
+        });
+    }
+
     calculation = () => {
         const {
             currentBorrowAmount,
@@ -128,6 +142,7 @@ class BalanceTracker extends Component {
             futureMonthlyRepayment,
             futureTermInYears,
             futureMortgageType,
+            futureRepaymentMethod,
         } = this.state;
 
         const currentYear = moment().year();
@@ -135,6 +150,10 @@ class BalanceTracker extends Component {
 
         const currentInterestRate = this.interestRate(currentMortgageTerm * 12, -currentMonthlyRepayment, currentBorrowAmount);
         const futureInterestRate = this.futureInterestRate(futureTermInYears, futureMortgageType);
+
+        if (currentInterestRate <= 0) {
+            this.showAlert();
+        }
 
         let date = moment().set('year', currentYear - 1).set('month', 11).format('MM.YYYY');
         let outstandingBalance = currentBorrowAmount;
@@ -147,8 +166,10 @@ class BalanceTracker extends Component {
                 const currentBalance = outstandingBalance - capital;
                 outstandingBalance = currentBalance >= 0 ? currentBalance : 0;
 
+                const fmr = this.futureMonthlyRepayment(futureInterestRate, futureMortgageTerm * 12, futureBorrowAmount, futureRepaymentMethod, futureOutstandingBalance);
+
                 const futureInterest = this.interest(futureOutstandingBalance, futureInterestRate);
-                const futureCapital = this.capital(futureMonthlyRepayment, futureInterest);
+                const futureCapital = this.futureCapital(fmr, futureInterest);
                 const futureBalance = futureOutstandingBalance - futureCapital;
                 futureOutstandingBalance = futureBalance >= 0 ? futureBalance : 0;
 
@@ -168,26 +189,35 @@ class BalanceTracker extends Component {
             futureBorrowAmount,
             futureMortgageTerm,
             futureMonthlyRepayment,
+            futureMortgageType,
+            futureTermInYears,
+            futureRepaymentMethod,
+            alertOptions,
         } = this.state;
         return (
             <div className="balance-tracker">
                 <Calculator
-                    changeCurrentAmount={this.handleChangeCurrentBorrowAmount}
-                    changeMortgageTerm={this.handleChangeCurrentMortgageTerm}
-                    changeMonthlyRepayment={this.handleChangeCurrentMonthlyRepayment}
+                    changeCurrentAmount={(v) => this.handleChangeNumber('currentBorrowAmount', v)}
+                    changeMortgageTerm={(v) => this.handleChangeNumber('currentMortgageTerm', v)}
+                    changeMonthlyRepayment={(v) => this.handleChangeNumber('currentMonthlyRepayment', v)}
                     currentBorrowAmount={currentBorrowAmount}
                     currentMortgageTerm={currentMortgageTerm}
                     currentMonthlyRepayment={currentMonthlyRepayment}
-                    changeFutureAmount={this.handleChangeFutureBorrowAmount}
-                    changeFutureMortgageTerm={this.handleChangeFutureMortgageTerm}
-                    changeFutureMonthlyRepayment={this.handleChangeFutureRepayment}
+                    changeFutureAmount={(v) => this.handleChangeNumber('futureBorrowAmount', v)}
+                    changeFutureMortgageTerm={(v) => this.handleChangeNumber('futureMortgageTerm', v)}
+                    changeFutureMonthlyRepayment={(v) => this.handleChangeNumber('futureMonthlyRepayment', v)}
                     futureBorrowAmount={futureBorrowAmount}
                     futureMortgageTerm={futureMortgageTerm}
                     futureMonthlyRepayment={futureMonthlyRepayment}
-                    changeFutureTerm={this.changeFutureTerm}
-                    changeFutureMortageType={this.changeFutureMortageType}
+                    changeFutureTerm={(v) => this.handleChangeNumber('futureTermInYears', v)}
+                    changeFutureMortageType={(v) => this.handleChangeString('futureMortgageType', v)}
+                    changeFutureRepaymentMethod={(v) => this.handleChangeString('futureRepaymentMethod', v)}
+                    futureMortgageType={futureMortgageType}
+                    futureTermInYears={futureTermInYears}
+                    futureRepaymentMethod={futureRepaymentMethod}
                 />
                 <Graphs current={this.state.current} />
+                <AlertContainer ref={a => this.alert = a} {...alertOptions} />
             </div>
         );
     }

@@ -33,6 +33,8 @@ class InputNumber extends Component {
         if (prefix) value = value.replace(prefix, '');
         if (postfix) value = value.replace(postfix, '');
 
+        value = +value;
+
         this.update(value);
     }
 
@@ -46,7 +48,7 @@ class InputNumber extends Component {
             <div className="input-number-container">
                 <p className="label">{label}</p>
                 <div className="input-wrapper">
-                    <span className="input-number-decrement" onClick={this.decrease.bind(this)}>
+                    <span className="input-number-decrement" onClick={this.decrease}>
                         <FaMinusCircle size={24}/>
                     </span>
                     <input className="input-number" type="text" value={formated} onChange={this.onChange}/>

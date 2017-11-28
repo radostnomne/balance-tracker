@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Chart } from 'react-google-charts';
-import moment from 'moment';
 import FaInfo from 'react-icons/lib/fa/info-circle';
 import './Graphs.css';
 
