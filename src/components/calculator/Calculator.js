@@ -5,6 +5,10 @@ import './Calculator.css';
 
 class Calculator extends Component {
 
+    handleChange = (value) => {
+        console.log(value);
+    }
+
     render() {
         const {
             currentBorrowAmount,
