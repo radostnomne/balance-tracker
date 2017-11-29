@@ -151,9 +151,9 @@ class BalanceTracker extends Component {
         const currentInterestRate = this.interestRate(currentMortgageTerm * 12, -currentMonthlyRepayment, currentBorrowAmount);
         const futureInterestRate = this.futureInterestRate(futureTermInYears, futureMortgageType);
 
-        if (currentInterestRate <= 0) {
-            this.showAlert();
-        }
+        // if (currentInterestRate <= 0) {
+        //     this.showAlert();
+        // }
 
         let date = moment().set('year', currentYear - 1).set('month', 11).format('MM.YYYY');
         let outstandingBalance = currentBorrowAmount;
